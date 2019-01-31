@@ -20,7 +20,7 @@ const (
 	MergeSignRange             = 15
 )
 
-var TIP2019Block = big.NewInt(1050000)
+var TIP2019Block = big.NewInt(0)
 var IsTestnet bool = false
 var StoreRewardFolder string
 var RollbackHash Hash
