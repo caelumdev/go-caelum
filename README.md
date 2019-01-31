@@ -25,22 +25,22 @@ Read more about us on:
 
 ## Building the source
 
-Tomochain provides a client binary called `caelum` for both running a masternode and running a full-node.
-Building `caelum` requires both a Go (1.7+) and C compiler; install both of these.
+Tomochain provides a client binary called `tomo` for both running a masternode and running a full-node.
+Building `tomo` requires both a Go (1.7+) and C compiler; install both of these.
 
 Once the dependencies are installed, just run the below commands:
 
 ```bash
 $ git clone https://github.com/tomochain/tomochain tomochain
 $ cd tomochain
-$ make caelum
+$ make tomo
 ```
 
 Alternatively, you could quickly download our pre-complied binary from our [github release page](https://github.com/tomochain/tomochain/releases)
 
-## Running caelum
+## Running tomo
 
-### Running a caelum masternode
+### Running a tomo masternode
 
 Please refer to the [official documentation](https://docs.tomochain.com/get-started/run-node/) on how to run a node if your goal is to run a masternode.
 The recommanded ways of running a node and applying to become a masternode are explained in detail there.
@@ -53,44 +53,44 @@ If you'd like to experiment with smart contract creation and DApps, you might be
 In order to connect to one of the masternodes on the Testnet, just run the command below:
 
 ```bash
-$ caelum attach https://testnet.tomochain.com
+$ tomo attach https://testnet.tomochain.com
 ```
 
 This will open the JavaScript console and let you query the blockchain directly via RPC.
 
-### Running caelum locally
+### Running tomo locally
 
-If you would like to run caelum locally to see how it works under the hood and have a copy of the blockchain, you can try it on our Testnet by running the commands below:
+If you would like to run tomo locally to see how it works under the hood and have a copy of the blockchain, you can try it on our Testnet by running the commands below:
 
 ```bash
 // 1. create a folder to store tomochain data on your machine
 $ export DATA_DIR=/path/to/your/data/folder
-$ mkdir -p $DATA_DIR/caelum
+$ mkdir -p $DATA_DIR/tomo
 
 // 2. download our genesis file
 $ export GENESIS_PATH=$DATA_DIR/genesis.json
 $ curl -L https://raw.githubusercontent.com/tomochain/tomochain/master/genesis/testnet.json -o $GENESIS_PATH
 
 // 3. init the chain from genesis
-$ caelum init $GENESIS_PATH --datadir $DATA_DIR
+$ tomo init $GENESIS_PATH --datadir $DATA_DIR
 
 // 4. get a test account. Create a new one if you don't have any:
 $ export KEYSTORE_DIR=keystore
 $ touch $DATA_DIR/password && echo 'your-password' > $DATA_DIR/password
-$ caelum account new \
+$ tomo account new \
       --datadir $DATA_DIR \
       --keystore $KEYSTORE_DIR \
       --password $DATA_DIR/password
 
 // if you already have a test account, import it now
-$ caelum  account import ./private_key \
+$ tomo  account import ./private_key \
       --datadir $DATA_DIR \
       --keystore $KEYSTORE_DIR \
       --password $DATA_DIR/password
 
 // get the account
 $ account=$(
-  caelum account list --datadir $DATA_DIR  --keystore $KEYSTORE_DIR \
+  tomo account list --datadir $DATA_DIR  --keystore $KEYSTORE_DIR \
   2> /dev/null \
   | head -n 1 \
   | cut -d"{" -f 2 | cut -d"}" -f 1
@@ -99,9 +99,9 @@ $ account=$(
 // 5. prepare the bootnodes list
 $ export BOOTNODES="enode://4d3c2cc0ce7135c1778c6f1cfda623ab44b4b6db55289543d48ecfde7d7111fd420c42174a9f2fea511a04cf6eac4ec69b4456bfaaae0e5bd236107d3172b013@52.221.28.223:30301,enode://298780104303fcdb37a84c5702ebd9ec660971629f68a933fd91f7350c54eea0e294b0857f1fd2e8dba2869fcc36b83e6de553c386cf4ff26f19672955d9f312@13.251.101.216:30301,enode://46dba3a8721c589bede3c134d755eb1a38ae7c5a4c69249b8317c55adc8d46a369f98b06514ecec4b4ff150712085176818d18f59a9e6311a52dbe68cff5b2ae@13.250.94.232:30301"
 
-// 6. Start up caelum now
+// 6. Start up tomo now
 $ export NAME=YOUR_NODE_NAME
-$ caelum \
+$ tomo \
   --verbosity 4 \
   --datadir $DATA_DIR \
   --keystore $KEYSTORE_DIR \

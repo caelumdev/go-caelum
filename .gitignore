@@ -25,7 +25,7 @@ build/_vendor/pkg
 # used by the Makefile
 /build/_workspace/
 /build/bin/
-/caelum*.zip
+/tomo*.zip
 
 # travis
 profile.tmp

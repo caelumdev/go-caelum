@@ -27,7 +27,7 @@ import (
 )
 
 func tmpdir(t *testing.T) string {
-	dir, err := ioutil.TempDir("", "caelum-test")
+	dir, err := ioutil.TempDir("", "tomo-test")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -43,8 +43,8 @@ type testtomo struct {
 }
 
 func init() {
-	// Run the app if we've been exec'd as "caelum-test" in runGeth.
-	reexec.Register("caelum-test", func() {
+	// Run the app if we've been exec'd as "tomo-test" in runGeth.
+	reexec.Register("tomo-test", func() {
 		if err := app.Run(os.Args); err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
@@ -61,7 +61,7 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-// spawns caelum with the given command line args. If the args don't set --datadir, the
+// spawns tomo with the given command line args. If the args don't set --datadir, the
 // child g gets a temporary data directory.
 func runTomo(t *testing.T, args ...string) *testtomo {
 	tt := &testtomo{}
@@ -90,9 +90,9 @@ func runTomo(t *testing.T, args ...string) *testtomo {
 		}()
 	}
 
-	// Boot "caelum". This actually runs the test binary but the TestMain
+	// Boot "tomo". This actually runs the test binary but the TestMain
 	// function will prevent any tests from running.
-	tt.Run("caelum-test", args...)
+	tt.Run("tomo-test", args...)
 
 	return tt
 }

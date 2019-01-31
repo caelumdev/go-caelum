@@ -40,7 +40,7 @@ import (
 )
 
 const (
-	clientIdentifier = "caelum" // Client identifier to advertise over the network
+	clientIdentifier = "tomo" // Client identifier to advertise over the network
 )
 
 var (
@@ -148,8 +148,8 @@ var (
 )
 
 func init() {
-	// Initialize the CLI app and start caelum
-	app.Action = caelum
+	// Initialize the CLI app and start tomo
+	app.Action = tomo
 	app.HideVersion = true // we have a command to print the version
 	app.Copyright = "Copyright (c) 2018 Tomochain"
 	app.Commands = []cli.Command{
@@ -205,10 +205,10 @@ func main() {
 	}
 }
 
-// caelum is the main entry point into the system if no special subcommand is ran.
+// tomo is the main entry point into the system if no special subcommand is ran.
 // It creates a default node based on the command line arguments and runs it in
 // blocking mode, waiting for it to be shut down.
-func caelum(ctx *cli.Context) error {
+func tomo(ctx *cli.Context) error {
 	node, cfg := makeFullNode(ctx)
 	startNode(ctx, node, cfg)
 	node.Wait()
