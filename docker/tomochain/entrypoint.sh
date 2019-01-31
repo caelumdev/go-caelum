@@ -21,7 +21,7 @@ KEYSTORE_DIR="keystore"
 genesisPath=""
 params=""
 accountsCount=$(
-  caelum account list --datadir $DATA_DIR  --keystore $KEYSTORE_DIR \
+  tomo account list --datadir $DATA_DIR  --keystore $KEYSTORE_DIR \
   2> /dev/null \
   | wc -l
 )
@@ -55,7 +55,7 @@ if [[ ! -z $NETWORK_ID ]]; then
       ;;
     89 )
       genesisPath="testnet.json"
-      params="$params --caelum-testnet"
+      params="$params --tomo-testnet"
       ;;
     90 )
       genesisPath="devnet.json"
@@ -68,9 +68,9 @@ if [[ ! -z $NETWORK_ID ]]; then
 fi
 
 # data dir
-if [[ ! -d $DATA_DIR/caelum ]]; then
+if [[ ! -d $DATA_DIR/tomo ]]; then
   echo "No blockchain data, creating genesis block."
-  caelum init $genesisPath --datadir $DATA_DIR 2> /dev/null
+  tomo init $genesisPath --datadir $DATA_DIR 2> /dev/null
 fi
 
 # identity
@@ -95,21 +95,21 @@ if [[ $accountsCount -le 0 ]]; then
   if [[ ! -z $PRIVATE_KEY ]]; then
     echo "Creating account from private key"
     echo "$PRIVATE_KEY" > ./private_key
-    caelum  account import ./private_key \
+    tomo  account import ./private_key \
       --datadir $DATA_DIR \
       --keystore $KEYSTORE_DIR \
       --password ./password
     rm ./private_key
   else
     echo "Creating new account"
-    caelum account new \
+    tomo account new \
       --datadir $DATA_DIR \
       --keystore $KEYSTORE_DIR \
       --password ./password
   fi
 fi
 account=$(
-  caelum account list --datadir $DATA_DIR  --keystore $KEYSTORE_DIR \
+  tomo account list --datadir $DATA_DIR  --keystore $KEYSTORE_DIR \
   2> /dev/null \
   | head -n 1 \
   | cut -d"{" -f 2 | cut -d"}" -f 1
@@ -155,7 +155,7 @@ echo "dump: $IDENTITY $account $BOOTNODES"
 
 set -x
 
-exec caelum $params \
+exec tomo $params \
   --verbosity $VERBOSITY \
   --datadir $DATA_DIR \
   --keystore $KEYSTORE_DIR \

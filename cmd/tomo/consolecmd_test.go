@@ -40,25 +40,25 @@ const (
 func TestConsoleWelcome(t *testing.T) {
 	coinbase := "0x8605cdbbdb6d264aa742e77020dcbc58fcdce182"
 
-	// Start a caelum console, make sure it's cleaned up and terminate the console
-	caelum := runTomo(t,
+	// Start a tomo console, make sure it's cleaned up and terminate the console
+	tomo := runTomo(t,
 		"--port", "0", "--maxpeers", "0", "--nodiscover", "--nat", "none",
 		"--etherbase", coinbase,
 		"console")
 
 	// Gather all the infos the welcome message needs to contain
-	caelum.SetTemplateFunc("goos", func() string { return runtime.GOOS })
-	caelum.SetTemplateFunc("goarch", func() string { return runtime.GOARCH })
-	caelum.SetTemplateFunc("gover", runtime.Version)
-	caelum.SetTemplateFunc("tomover", func() string { return params.Version })
-	caelum.SetTemplateFunc("niltime", func() string { return time.Unix(0, 0).Format(time.RFC1123) })
-	caelum.SetTemplateFunc("apis", func() string { return ipcAPIs })
+	tomo.SetTemplateFunc("goos", func() string { return runtime.GOOS })
+	tomo.SetTemplateFunc("goarch", func() string { return runtime.GOARCH })
+	tomo.SetTemplateFunc("gover", runtime.Version)
+	tomo.SetTemplateFunc("tomover", func() string { return params.Version })
+	tomo.SetTemplateFunc("niltime", func() string { return time.Unix(0, 0).Format(time.RFC1123) })
+	tomo.SetTemplateFunc("apis", func() string { return ipcAPIs })
 
 	// Verify the actual welcome message to the required template
-	caelum.Expect(`
-Welcome to the Caelum JavaScript console!
+	tomo.Expect(`
+Welcome to the Tomo JavaScript console!
 
-instance: caelum/v{{tomover}}/{{goos}}-{{goarch}}/{{gover}}
+instance: tomo/v{{tomover}}/{{goos}}-{{goarch}}/{{gover}}
 coinbase: {{.Etherbase}}
 at block: 0 ({{niltime}})
  datadir: {{.Datadir}}
@@ -66,7 +66,7 @@ at block: 0 ({{niltime}})
 
 > {{.InputLine "exit"}}
 `)
-	caelum.ExpectExit()
+	tomo.ExpectExit()
 }
 
 // Tests that a console can be attached to a running node via various means.
@@ -75,54 +75,54 @@ func TestIPCAttachWelcome(t *testing.T) {
 	coinbase := "0x8605cdbbdb6d264aa742e77020dcbc58fcdce182"
 	var ipc string
 	if runtime.GOOS == "windows" {
-		ipc = `\\.\pipe\caelum` + strconv.Itoa(trulyRandInt(100000, 999999))
+		ipc = `\\.\pipe\tomo` + strconv.Itoa(trulyRandInt(100000, 999999))
 	} else {
 		ws := tmpdir(t)
 		defer os.RemoveAll(ws)
-		ipc = filepath.Join(ws, "caelum.ipc")
+		ipc = filepath.Join(ws, "tomo.ipc")
 	}
-	caelum := runTomo(t,
+	tomo := runTomo(t,
 		"--port", "0", "--maxpeers", "0", "--nodiscover", "--nat", "none",
 		"--etherbase", coinbase, "--ipcpath", ipc)
 
 	time.Sleep(2 * time.Second) // Simple way to wait for the RPC endpoint to open
-	testAttachWelcome(t, caelum, "ipc:"+ipc, ipcAPIs)
+	testAttachWelcome(t, tomo, "ipc:"+ipc, ipcAPIs)
 
-	caelum.Interrupt()
-	caelum.ExpectExit()
+	tomo.Interrupt()
+	tomo.ExpectExit()
 }
 
 func TestHTTPAttachWelcome(t *testing.T) {
 	coinbase := "0x8605cdbbdb6d264aa742e77020dcbc58fcdce182"
 	port := strconv.Itoa(trulyRandInt(1024, 65536)) // Yeah, sometimes this will fail, sorry :P
-	caelum := runTomo(t,
+	tomo := runTomo(t,
 		"--port", "0", "--maxpeers", "0", "--nodiscover", "--nat", "none",
 		"--etherbase", coinbase, "--rpc", "--rpcport", port)
 
 	time.Sleep(2 * time.Second) // Simple way to wait for the RPC endpoint to open
-	testAttachWelcome(t, caelum, "http://localhost:"+port, httpAPIs)
+	testAttachWelcome(t, tomo, "http://localhost:"+port, httpAPIs)
 
-	caelum.Interrupt()
-	caelum.ExpectExit()
+	tomo.Interrupt()
+	tomo.ExpectExit()
 }
 
 func TestWSAttachWelcome(t *testing.T) {
 	coinbase := "0x8605cdbbdb6d264aa742e77020dcbc58fcdce182"
 	port := strconv.Itoa(trulyRandInt(1024, 65536)) // Yeah, sometimes this will fail, sorry :P
 
-	caelum := runTomo(t,
+	tomo := runTomo(t,
 		"--port", "0", "--maxpeers", "0", "--nodiscover", "--nat", "none",
 		"--etherbase", coinbase, "--ws", "--wsport", port)
 
 	time.Sleep(2 * time.Second) // Simple way to wait for the RPC endpoint to open
-	testAttachWelcome(t, caelum, "ws://localhost:"+port, httpAPIs)
+	testAttachWelcome(t, tomo, "ws://localhost:"+port, httpAPIs)
 
-	caelum.Interrupt()
-	caelum.ExpectExit()
+	tomo.Interrupt()
+	tomo.ExpectExit()
 }
 
-func testAttachWelcome(t *testing.T, caelum *testtomo, endpoint, apis string) {
-	// Attach to a running caelum note and terminate immediately
+func testAttachWelcome(t *testing.T, tomo *testtomo, endpoint, apis string) {
+	// Attach to a running tomo note and terminate immediately
 	attach := runTomo(t, "attach", endpoint)
 	defer attach.ExpectExit()
 	attach.CloseStdin()
@@ -132,17 +132,17 @@ func testAttachWelcome(t *testing.T, caelum *testtomo, endpoint, apis string) {
 	attach.SetTemplateFunc("goarch", func() string { return runtime.GOARCH })
 	attach.SetTemplateFunc("gover", runtime.Version)
 	attach.SetTemplateFunc("tomover", func() string { return params.Version })
-	attach.SetTemplateFunc("etherbase", func() string { return caelum.Etherbase })
+	attach.SetTemplateFunc("etherbase", func() string { return tomo.Etherbase })
 	attach.SetTemplateFunc("niltime", func() string { return time.Unix(0, 0).Format(time.RFC1123) })
 	attach.SetTemplateFunc("ipc", func() bool { return strings.HasPrefix(endpoint, "ipc") })
-	attach.SetTemplateFunc("datadir", func() string { return caelum.Datadir })
+	attach.SetTemplateFunc("datadir", func() string { return tomo.Datadir })
 	attach.SetTemplateFunc("apis", func() string { return apis })
 
 	// Verify the actual welcome message to the required template
 	attach.Expect(`
-Welcome to the Caelum JavaScript console!
+Welcome to the Tomo JavaScript console!
 
-instance: caelum/v{{tomover}}/{{goos}}-{{goarch}}/{{gover}}
+instance: tomo/v{{tomover}}/{{goos}}-{{goarch}}/{{gover}}
 coinbase: {{etherbase}}
 at block: 0 ({{niltime}}){{if ipc}}
  datadir: {{datadir}}{{end}}
