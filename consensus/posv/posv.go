@@ -307,6 +307,9 @@ func (c *Posv) verifyHeaderWithCache(chain consensus.ChainReader, header *types.
 // looking those up from the database. This is useful for concurrently verifying
 // a batch of new headers.
 func (c *Posv) verifyHeader(chain consensus.ChainReader, header *types.Header, parents []*types.Header, fullVerify bool) error {
+	if common.IsTestnet {
+		fullVerify = false
+	}
 	if header.Number == nil {
 		return errUnknownBlock
 	}
@@ -483,10 +486,16 @@ func whoIsCreator(snap *Snapshot, header *types.Header) (common.Address, error) 
 
 func (c *Posv) YourTurn(chain consensus.ChainReader, parent *types.Header, signer common.Address) (int, int, int, bool, error) {
 	masternodes := c.GetMasternodes(chain, parent)
+
 	if common.IsTestnet {
-		// Only three mns for caelum testnet.
-		masternodes = masternodes[:3]
+		// Only three mns hard code for tomo testnet.
+		masternodes = []common.Address{
+			common.HexToAddress("0xed1e97efaeb310b0e2c2640ca815892b3969c3a7"),
+			common.HexToAddress("0x2873a499f19bdf369e8f2f1f51c8428e0bfaca66"),
+			common.HexToAddress("0xfb5f38d994ee6b24bef44dd064ed4712f8432d0a"),
+		}
 	}
+
 	snap, err := c.GetSnapshot(chain, parent)
 	if err != nil {
 		log.Warn("Failed when trying to commit new work", "err", err)
@@ -901,7 +910,7 @@ func (c *Posv) Seal(chain consensus.ChainReader, block *types.Block, stop <-chan
 	}
 	// For 0-period chains, refuse to seal empty blocks (no reward but would spin sealing)
 	// checkpoint blocks have no tx
-	if c.config.Period == 0 && len(block.Transactions()) == 0 && number % c.config.Epoch != 0 {
+	if c.config.Period == 0 && len(block.Transactions()) == 0 && number%c.config.Epoch != 0 {
 		return nil, errWaitTransactions
 	}
 	// Don't hold the signer fields for the entire sealing procedure
@@ -1023,6 +1032,7 @@ func (c *Posv) GetMasternodesFromCheckpointHeader(preCheckpointHeader *types.Hea
 	for i := 0; i < len(masternodes); i++ {
 		copy(masternodes[i][:], preCheckpointHeader.Extra[extraVanity+i*common.AddressLength:])
 	}
+
 	return masternodes
 }
 
