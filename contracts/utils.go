@@ -479,7 +479,7 @@ func GetRewardBalancesRate(foundationWalletAddr common.Address, EIPWalletAddr co
 
 	foundationReward := new(big.Int).Mul(totalReward, new(big.Int).SetInt64(common.RewardFoundationPercent))
 	foundationReward = new(big.Int).Div(foundationReward, new(big.Int).SetInt64(100))
-	balances[EIPAddr] = foundationReward
+	balances[foundationWalletAddr] = foundationReward
 
 	// EIP918
 	EIP918Reward := new(big.Int).Mul(totalReward, new(big.Int).SetInt64(common.RewardEIP918Percent))
