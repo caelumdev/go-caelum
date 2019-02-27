@@ -151,6 +151,9 @@ type PosvConfig struct {
 	RewardCheckpoint    uint64         `json:"rewardCheckpoint"`    // Checkpoint block for calculate rewards.
 	Gap                 uint64         `json:"gap"`                 // Gap time preparing for the next epoch
 	FoudationWalletAddr common.Address `json:"foudationWalletAddr"` // Foundation Address Wallet
+	
+	// EIP918
+	EIPAddr common.Address "0x0000000000000000000000000000000000000044" // Foundation Address Wallet
 }
 
 // String implements the stringer interface, returning the consensus engine details.
