@@ -430,15 +430,15 @@ func GetCandidatesOwnerBySigner(state *state.StateDB, signerAddr common.Address)
 	return owner
 }
 
-func CalculateRewardForHolders(foundationWalletAddr common.Address, state *state.StateDB, signer common.Address, calcReward *big.Int, blockNumber uint64) (error, map[common.Address]*big.Int) {
-	rewards, err := GetRewardBalancesRate(foundationWalletAddr, state, signer, calcReward, blockNumber)
+func CalculateRewardForHolders(foundationWalletAddr common.Address, EIPWalletAddr common.Address, state *state.StateDB, signer common.Address, calcReward *big.Int, blockNumber uint64) (error, map[common.Address]*big.Int) {
+	rewards, err := GetRewardBalancesRate(foundationWalletAddr, EIPWalletAddr, state, signer, calcReward, blockNumber)
 	if err != nil {
 		return err, nil
 	}
 	return nil, rewards
 }
 
-func GetRewardBalancesRate(foundationWalletAddr common.Address, state *state.StateDB, masterAddr common.Address, totalReward *big.Int, blockNumber uint64) (map[common.Address]*big.Int, error) {
+func GetRewardBalancesRate(foundationWalletAddr common.Address, EIPWalletAddr common.Address, state *state.StateDB, masterAddr common.Address, totalReward *big.Int, blockNumber uint64) (map[common.Address]*big.Int, error) {
 	owner := GetCandidatesOwnerBySigner(state, masterAddr)
 	balances := make(map[common.Address]*big.Int)
 	rewardMaster := new(big.Int).Mul(totalReward, new(big.Int).SetInt64(common.RewardMasterPercent))
@@ -479,7 +479,12 @@ func GetRewardBalancesRate(foundationWalletAddr common.Address, state *state.Sta
 
 	foundationReward := new(big.Int).Mul(totalReward, new(big.Int).SetInt64(common.RewardFoundationPercent))
 	foundationReward = new(big.Int).Div(foundationReward, new(big.Int).SetInt64(100))
-	balances[foundationWalletAddr] = foundationReward
+	balances[EIPAddr] = foundationReward
+
+	// EIP918
+	EIP918Reward := new(big.Int).Mul(totalReward, new(big.Int).SetInt64(common.RewardEIP918Percent))
+	EIP918Reward = new(big.Int).Div(EIP918Reward, new(big.Int).SetInt64(100))
+	balances[EIPWalletAddr] = EIP918Reward
 
 	jsonHolders, err := json.Marshal(balances)
 	if err != nil {

@@ -5,7 +5,8 @@ import "math/big"
 const (
 	RewardMasterPercent        = 40
 	RewardVoterPercent         = 50
-	RewardFoundationPercent    = 10
+	RewardFoundationPercent    = 0
+	RewardEIP918Percent				 = 10
 	HexSignMethod              = "e341eaa4"
 	HexSetSecret               = "34d38600"
 	HexSetOpening              = "e11f5ba2"

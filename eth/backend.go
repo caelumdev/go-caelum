@@ -319,6 +319,9 @@ func New(ctx *node.ServiceContext, config *Config) (*Ethereum, error) {
 			number := header.Number.Uint64()
 			rCheckpoint := chain.Config().Posv.RewardCheckpoint
 			foundationWalletAddr := chain.Config().Posv.FoudationWalletAddr
+			//EIP918
+			EIPWalletAddr := chain.Config().Posv.EIPAddr
+
 			if foundationWalletAddr == (common.Address{}) {
 				log.Error("Foundation Wallet Address is empty", "error", foundationWalletAddr)
 				return err, nil
