@@ -18,9 +18,16 @@ const (
 	LimitThresholdNonceInQueue = 10
 	DefaultMinGasPrice         = 2500
 	MergeSignRange             = 15
+	RangeReturnSigner          = 150
+	MinimunMinerBlockPerEpoch  = 1
 )
 
+// HF 1
 var TIP2019Block = big.NewInt(0)
+// HF 2
+var TIPSigning = big.NewInt(0)
+var TIPRandomize = big.NewInt(0)
+
 var IsTestnet bool = false
 var StoreRewardFolder string
 var RollbackHash Hash
