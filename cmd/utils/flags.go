@@ -747,9 +747,9 @@ func setIPC(ctx *cli.Context, cfg *node.Config) {
 	}
 }
 
-// makeDatabaseHandles raises out the number of allowed file handles per process
-// for caelum and returns half of the allowance to assign to the database.
-func makeDatabaseHandles() int {
+// MakeDatabaseHandles raises out the number of allowed file handles per process
+// for tomo and returns half of the allowance to assign to the database.
+func MakeDatabaseHandles() int {
 	limit, err := fdlimit.Current()
 	if err != nil {
 		Fatalf("Failed to retrieve file descriptor allowance: %v", err)
