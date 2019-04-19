@@ -24,12 +24,13 @@ const (
 	VersionMajor = 1        // Major version component of the current release
 	VersionMinor = 3        // Minor version component of the current release
 	VersionPatch = 2        // Patch version component of the current release
-	VersionMeta  = "clmp-test" // Version metadata to append to the version string
+	VersionRevision = 1			// Revision
+	VersionMeta  = "clmp-dev" // Version metadata to append to the version string
 )
 
 // Version holds the textual version string.
 var Version = func() string {
-	v := fmt.Sprintf("%d.%d.%d", VersionMajor, VersionMinor, VersionPatch)
+	v := fmt.Sprintf("%d.%d.%d.%d", VersionMajor, VersionMinor, VersionPatch, VersionRevision)
 	if VersionMeta != "" {
 		v += "-" + VersionMeta
 	}
