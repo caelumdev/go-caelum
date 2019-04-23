@@ -153,7 +153,7 @@ func makeConfigNode(ctx *cli.Context) (*node.Node, caelumConfig) {
 	}
 
 	// Check testnet is enable.
-	if ctx.GlobalBool(utils.TomoTestnetFlag.Name) {
+	if ctx.GlobalBool(utils.CaelumTestnetFlag.Name) {
 		common.IsTestnet = true
 	}
 

@@ -112,7 +112,7 @@ func NewApp(gitCommit, usage string) *cli.App {
 // are the same for all commands.
 
 var (
-	// Tomo flags.
+	// Caelum flags.
 	RollbackFlag = cli.StringFlag{
 		Name:  "rollback",
 		Usage: "Rollback chain at hash",
@@ -149,9 +149,9 @@ var (
 		Name:  "testnet",
 		Usage: "Ropsten network: pre-configured proof-of-work test network",
 	}
-	TomoTestnetFlag = cli.BoolFlag{
+	CaelumTestnetFlag = cli.BoolFlag{
 		Name:  "caelum-testnet",
-		Usage: "Tomo test network",
+		Usage: "Caelum test network",
 	}
 	RinkebyFlag = cli.BoolFlag{
 		Name:  "rinkeby",

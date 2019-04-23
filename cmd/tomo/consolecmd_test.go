@@ -41,7 +41,7 @@ func TestConsoleWelcome(t *testing.T) {
 	coinbase := "0x8605cdbbdb6d264aa742e77020dcbc58fcdce182"
 
 	// Start a caelum console, make sure it's cleaned up and terminate the console
-	caelum := runTomo(t,
+	caelum := runCaelum(t,
 		"--port", "0", "--maxpeers", "0", "--nodiscover", "--nat", "none",
 		"--etherbase", coinbase,
 		"console")
@@ -56,7 +56,7 @@ func TestConsoleWelcome(t *testing.T) {
 
 	// Verify the actual welcome message to the required template
 	caelum.Expect(`
-Welcome to the Tomo JavaScript console!
+Welcome to the Caelum JavaScript console!
 
 instance: caelum/v{{caelumver}}/{{goos}}-{{goarch}}/{{gover}}
 coinbase: {{.Etherbase}}
@@ -81,7 +81,7 @@ func TestIPCAttachWelcome(t *testing.T) {
 		defer os.RemoveAll(ws)
 		ipc = filepath.Join(ws, "caelum.ipc")
 	}
-	caelum := runTomo(t,
+	caelum := runCaelum(t,
 		"--port", "0", "--maxpeers", "0", "--nodiscover", "--nat", "none",
 		"--etherbase", coinbase, "--ipcpath", ipc)
 
@@ -95,7 +95,7 @@ func TestIPCAttachWelcome(t *testing.T) {
 func TestHTTPAttachWelcome(t *testing.T) {
 	coinbase := "0x8605cdbbdb6d264aa742e77020dcbc58fcdce182"
 	port := strconv.Itoa(trulyRandInt(1024, 65536)) // Yeah, sometimes this will fail, sorry :P
-	caelum := runTomo(t,
+	caelum := runCaelum(t,
 		"--port", "0", "--maxpeers", "0", "--nodiscover", "--nat", "none",
 		"--etherbase", coinbase, "--rpc", "--rpcport", port)
 
@@ -110,7 +110,7 @@ func TestWSAttachWelcome(t *testing.T) {
 	coinbase := "0x8605cdbbdb6d264aa742e77020dcbc58fcdce182"
 	port := strconv.Itoa(trulyRandInt(1024, 65536)) // Yeah, sometimes this will fail, sorry :P
 
-	caelum := runTomo(t,
+	caelum := runCaelum(t,
 		"--port", "0", "--maxpeers", "0", "--nodiscover", "--nat", "none",
 		"--etherbase", coinbase, "--ws", "--wsport", port)
 
@@ -123,7 +123,7 @@ func TestWSAttachWelcome(t *testing.T) {
 
 func testAttachWelcome(t *testing.T, caelum *testcaelum, endpoint, apis string) {
 	// Attach to a running caelum note and terminate immediately
-	attach := runTomo(t, "attach", endpoint)
+	attach := runCaelum(t, "attach", endpoint)
 	defer attach.ExpectExit()
 	attach.CloseStdin()
 
@@ -140,7 +140,7 @@ func testAttachWelcome(t *testing.T, caelum *testcaelum, endpoint, apis string) 
 
 	// Verify the actual welcome message to the required template
 	attach.Expect(`
-Welcome to the Tomo JavaScript console!
+Welcome to the Caelum JavaScript console!
 
 instance: caelum/v{{caelumver}}/{{goos}}-{{goarch}}/{{gover}}
 coinbase: {{etherbase}}
