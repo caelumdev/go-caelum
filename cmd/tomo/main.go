@@ -152,7 +152,7 @@ func init() {
 	// Initialize the CLI app and start tomo
 	app.Action = tomo
 	app.HideVersion = true // we have a command to print the version
-	app.Copyright = "Copyright (c) 2018 Tomochain"
+	app.Copyright = "Copyright (c) 2018 Go-caelum"
 	app.Commands = []cli.Command{
 		// See chaincmd.go:
 		initCommand,
