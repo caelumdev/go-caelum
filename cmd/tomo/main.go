@@ -41,7 +41,7 @@ import (
 )
 
 const (
-	clientIdentifier = "tomo" // Client identifier to advertise over the network
+	clientIdentifier = "caelum" // Client identifier to advertise over the network
 )
 
 var (
@@ -149,8 +149,8 @@ var (
 )
 
 func init() {
-	// Initialize the CLI app and start tomo
-	app.Action = tomo
+	// Initialize the CLI app and start caelum
+	app.Action = caelum
 	app.HideVersion = true // we have a command to print the version
 	app.Copyright = "Copyright (c) 2018 Go-caelum"
 	app.Commands = []cli.Command{
@@ -206,10 +206,10 @@ func main() {
 	}
 }
 
-// tomo is the main entry point into the system if no special subcommand is ran.
+// caelum is the main entry point into the system if no special subcommand is ran.
 // It creates a default node based on the command line arguments and runs it in
 // blocking mode, waiting for it to be shut down.
-func tomo(ctx *cli.Context) error {
+func caelum(ctx *cli.Context) error {
 	node, cfg := makeFullNode(ctx)
 	startNode(ctx, node, cfg)
 	node.Wait()
@@ -219,7 +219,7 @@ func tomo(ctx *cli.Context) error {
 // startNode boots up the system node and all registered protocols, after which
 // it unlocks any requested accounts, and starts the RPC/IPC interfaces and the
 // miner.
-func startNode(ctx *cli.Context, stack *node.Node, cfg tomoConfig) {
+func startNode(ctx *cli.Context, stack *node.Node, cfg caelumConfig) {
 	// Start up the node itself
 	utils.StartNode(stack)
 

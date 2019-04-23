@@ -59,7 +59,7 @@ func DefaultDataDir() string {
 		} else if runtime.GOOS == "windows" {
 			return filepath.Join(home, "AppData", "Roaming", "Go-caelum")
 		} else {
-			return filepath.Join(home, ".tomo")
+			return filepath.Join(home, ".caelum")
 		}
 	}
 	// As we cannot guess a stable location, return empty and handle later
