@@ -1,4 +1,4 @@
-// Copyright (c) 2018 Tomochain
+// Copyright (c) 2018 Go-caelum
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -25,6 +25,8 @@ import (
 	"math/big"
 	"math/rand"
 	"path/filepath"
+	"reflect"
+	"sort"
 	"strconv"
 	"sync"
 	"time"
@@ -424,9 +426,11 @@ func (c *Posv) verifyCascadingFields(chain consensus.ChainReader, header *types.
 				signers = RemovePenaltiesFromBlock(chain, signers, number-uint64(i)*c.config.Epoch)
 			}
 		}
-		byteMasterNodes := common.ExtractAddressToBytes(signers)
 		extraSuffix := len(header.Extra) - extraSeal
-		if !bytes.Equal(header.Extra[extraVanity:extraSuffix], byteMasterNodes) {
+		masternodesFromCheckpointHeader := common.ExtractAddressFromBytes(header.Extra[extraVanity:extraSuffix])
+		validSigners := compareSignersLists(masternodesFromCheckpointHeader, signers)
+		if !validSigners {
+			log.Error("Masternodes lists are different in checkpoint header and snapshot", "number", number, "masternodes_from_checkpoint_header", masternodesFromCheckpointHeader, "masternodes_in_snapshot", signers, "penList", penPenalties)
 			return errInvalidCheckpointSigners
 		}
 		if c.HookVerifyMNs != nil {
@@ -438,6 +442,21 @@ func (c *Posv) verifyCascadingFields(chain consensus.ChainReader, header *types.
 	}
 	// All basic checks passed, verify the seal and return
 	return c.verifySeal(chain, header, parents, fullVerify)
+}
+
+// compare 2 signers lists
+// return true if they are same elements, otherwise return false
+func compareSignersLists(list1 []common.Address, list2 []common.Address) bool {
+	if len(list1) == 0 && len(list2) == 0 {
+		return true
+	}
+	sort.Slice(list1, func(i, j int) bool {
+		return list1[i].String() <= list1[j].String()
+	})
+	sort.Slice(list2, func(i, j int) bool {
+		return list2[i].String() <= list2[j].String()
+	})
+	return reflect.DeepEqual(list1, list2)
 }
 
 func (c *Posv) GetSnapshot(chain consensus.ChainReader, header *types.Header) (*Snapshot, error) {
@@ -494,7 +513,7 @@ func (c *Posv) YourTurn(chain consensus.ChainReader, parent *types.Header, signe
 	masternodes := c.GetMasternodes(chain, parent)
 
 	if common.IsTestnet {
-		// Only three mns hard code for tomo testnet.
+		// Only three mns hard code for caelum testnet.
 		masternodes = []common.Address{
 			common.HexToAddress("0xed1e97efaeb310b0e2c2640ca815892b3969c3a7"),
 			common.HexToAddress("0x2873a499f19bdf369e8f2f1f51c8428e0bfaca66"),

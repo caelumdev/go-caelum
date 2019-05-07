@@ -142,14 +142,14 @@ var (
 	}
 	NetworkIdFlag = cli.Uint64Flag{
 		Name:  "networkid",
-		Usage: "Network identifier (integer, 89=Tomochain)",
+		Usage: "Network identifier (integer, 89=Go-caelum)",
 		Value: eth.DefaultConfig.NetworkId,
 	}
 	TestnetFlag = cli.BoolFlag{
 		Name:  "testnet",
 		Usage: "Ropsten network: pre-configured proof-of-work test network",
 	}
-	TomoTestnetFlag = cli.BoolFlag{
+	CaelumTestnetFlag = cli.BoolFlag{
 		Name:  "caelum-testnet",
 		Usage: "Caelum test network",
 	}
@@ -748,7 +748,7 @@ func setIPC(ctx *cli.Context, cfg *node.Config) {
 }
 
 // MakeDatabaseHandles raises out the number of allowed file handles per process
-// for tomo and returns half of the allowance to assign to the database.
+// for caelum and returns half of the allowance to assign to the database.
 func MakeDatabaseHandles() int {
 	limit, err := fdlimit.Current()
 	if err != nil {

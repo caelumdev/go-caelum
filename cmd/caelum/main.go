@@ -27,6 +27,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/cmd/utils"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/consensus/posv"
 	"github.com/ethereum/go-ethereum/console"
 	"github.com/ethereum/go-ethereum/core"
@@ -47,7 +48,7 @@ var (
 	// Git SHA1 commit hash of the release (set via linker flags)
 	gitCommit = ""
 	// The app that holds all commands and flags.
-	app = utils.NewApp(gitCommit, "the tomochain command line interface")
+	app = utils.NewApp(gitCommit, "the go-caelum command line interface")
 	// flags that configure the node
 	nodeFlags = []cli.Flag{
 		utils.IdentityFlag,
@@ -109,7 +110,7 @@ var (
 		//utils.TestnetFlag,
 		//utils.RinkebyFlag,
 		//utils.VMEnableDebugFlag,
-		utils.TomoTestnetFlag,
+		utils.CaelumTestnetFlag,
 		utils.NetworkIdFlag,
 		utils.RPCCORSDomainFlag,
 		utils.RPCVirtualHostsFlag,
@@ -151,7 +152,7 @@ func init() {
 	// Initialize the CLI app and start caelum
 	app.Action = caelum
 	app.HideVersion = true // we have a command to print the version
-	app.Copyright = "Copyright (c) 2018 Tomochain"
+	app.Copyright = "Copyright (c) 2018 Go-caelum"
 	app.Commands = []cli.Command{
 		// See chaincmd.go:
 		initCommand,
@@ -218,7 +219,7 @@ func caelum(ctx *cli.Context) error {
 // startNode boots up the system node and all registered protocols, after which
 // it unlocks any requested accounts, and starts the RPC/IPC interfaces and the
 // miner.
-func startNode(ctx *cli.Context, stack *node.Node, cfg tomoConfig) {
+func startNode(ctx *cli.Context, stack *node.Node, cfg caelumConfig) {
 	// Start up the node itself
 	utils.StartNode(stack)
 
@@ -292,9 +293,18 @@ func startNode(ctx *cli.Context, stack *node.Node, cfg tomoConfig) {
 	if _, ok := ethereum.Engine().(*posv.Posv); ok {
 		go func() {
 			started := false
-			ok, err := ethereum.ValidateMasternode()
-			if err != nil {
-				utils.Fatalf("Can't verify masternode permission: %v", err)
+			ok := false
+			var err error
+			if common.IsTestnet {
+				ok, err = ethereum.ValidateMasternodeTestnet()
+				if err != nil {
+					utils.Fatalf("Can't verify masternode permission: %v", err)
+				}
+			} else {
+				ok, err = ethereum.ValidateMasternode()
+				if err != nil {
+					utils.Fatalf("Can't verify masternode permission: %v", err)
+				}
 			}
 			if ok {
 				log.Info("Masternode found. Enabling staking mode...")
@@ -318,9 +328,16 @@ func startNode(ctx *cli.Context, stack *node.Node, cfg tomoConfig) {
 			defer close(core.CheckpointCh)
 			for range core.CheckpointCh {
 				log.Info("Checkpoint!!! It's time to reconcile node's state...")
-				ok, err := ethereum.ValidateMasternode()
-				if err != nil {
-					utils.Fatalf("Can't verify masternode permission: %v", err)
+				if common.IsTestnet {
+					ok, err = ethereum.ValidateMasternodeTestnet()
+					if err != nil {
+						utils.Fatalf("Can't verify masternode permission: %v", err)
+					}
+				} else {
+					ok, err = ethereum.ValidateMasternode()
+					if err != nil {
+						utils.Fatalf("Can't verify masternode permission: %v", err)
+					}
 				}
 				if !ok {
 					if started {
