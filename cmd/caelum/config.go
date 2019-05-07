@@ -87,7 +87,7 @@ type Bootnodes struct {
 	Testnet []string
 }
 
-type tomoConfig struct {
+type caelumConfig struct {
 	Eth         eth.Config
 	Shh         whisper.Config
 	Node        node.Config
@@ -100,7 +100,7 @@ type tomoConfig struct {
 	NAT         string
 }
 
-func loadConfig(file string, cfg *tomoConfig) error {
+func loadConfig(file string, cfg *caelumConfig) error {
 	f, err := os.Open(file)
 	if err != nil {
 		return err
@@ -124,9 +124,9 @@ func defaultNodeConfig() node.Config {
 	return cfg
 }
 
-func makeConfigNode(ctx *cli.Context) (*node.Node, tomoConfig) {
+func makeConfigNode(ctx *cli.Context) (*node.Node, caelumConfig) {
 	// Load defaults.
-	cfg := tomoConfig{
+	cfg := caelumConfig{
 		Eth:         eth.DefaultConfig,
 		Shh:         whisper.DefaultConfig,
 		Node:        defaultNodeConfig(),
@@ -153,7 +153,7 @@ func makeConfigNode(ctx *cli.Context) (*node.Node, tomoConfig) {
 	}
 
 	// Check testnet is enable.
-	if ctx.GlobalBool(utils.TomoTestnetFlag.Name) {
+	if ctx.GlobalBool(utils.CaelumTestnetFlag.Name) {
 		common.IsTestnet = true
 	}
 
@@ -224,7 +224,7 @@ func enableWhisper(ctx *cli.Context) bool {
 	return false
 }
 
-func makeFullNode(ctx *cli.Context) (*node.Node, tomoConfig) {
+func makeFullNode(ctx *cli.Context) (*node.Node, caelumConfig) {
 	stack, cfg := makeConfigNode(ctx)
 
 	utils.RegisterEthService(stack, &cfg.Eth)
